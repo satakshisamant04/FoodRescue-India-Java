@@ -1,0 +1,46 @@
+server:
+  port: ${PORT:8080}
+  servlet:
+    context-path: /
+
+spring:
+  application:
+    name: foodrescue-india-backend
+  
+  # MongoDB configuration
+  data:
+    mongodb:
+      uri: ${MONGODB_URI:mongodb://localhost:27017/foodrescue_db}
+      auto-index-creation: true
+    
+    # Redis configuration
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      timeout: 2000ms
+
+  # Kafka configuration
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      group-id: foodrescue-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "com.foodrescue.*"
+
+# Application Specific Properties
+app:
+  jwt:
+    secret: ${JWT_SECRET:9a4f2c8d3e7b1a5f6c8d2e4b7a1c3e5f8a0b2d4e6f8a1c3e5f7b9a2c4e6f8a0b}
+    expiration-ms: ${JWT_EXPIRATION_MS:86400000} # 24 Hours
+  kafka:
+    topics:
+      donation-events: food-donation-events
+  redis:
+    cache-ttl-minutes: 10

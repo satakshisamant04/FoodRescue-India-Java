@@ -1,0 +1,448 @@
+import { FoodDonation, ActivityItem, UserProfile, NGOBroadcastRequest, PlatformStats, PickupTask, KafkaLogRecord, RedisCacheMetrics } from '../types';
+
+import { FoodDonation, ActivityItem, UserProfile, NGOBroadcastRequest, PlatformStats, PickupTask, KafkaLogRecord, RedisCacheMetrics } from '../types';
+
+export const INITIAL_DONATIONS: FoodDonation[] = [
+  {
+    id: 'food-dn-100',
+    donorId: 'donor-taj-bhubaneswar',
+    donorName: 'Taj Vivanta Kitchen',
+    donorPhone: '+91 94370 11223',
+    donorType: 'Hotel',
+    title: 'Hot Dal Baati, Steamed Basmati Rice & Mix Veg',
+    description: 'Surplus lunch banquet meals safely packed in insulated stainless steel carriers at 65°C.',
+    category: 'cooked_meals',
+    servings: 120,
+    weightKg: 35.0,
+    storage: 'ambient',
+    vegNonVeg: 'pure_veg',
+    preparedAt: 'Today at 11:30 AM',
+    expiryTime: 'Today by 5:30 PM',
+    pickupWindow: 'Completed',
+    address: 'DN Square, Patia, Bhubaneswar',
+    city: 'Bhubaneswar (Odisha)',
+    locality: 'Patia IT Corridor',
+    latitude: 20.3533,
+    longitude: 85.8195,
+    status: 'completed',
+    contactPhone: '+91 94370 11223',
+    notes: 'Handed over fresh to shelter.',
+    image: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=600&q=80',
+    createdAt: '3 hours ago',
+    deliveredAt: 'Today, 1:45 PM',
+    claimedByNGO: {
+      id: 'ngo-aahaar-bbsr',
+      name: 'Aahaar Seva Foundation',
+      contact: '+91 94372 88990',
+      address: 'Old Town Night Shelter, Bhubaneswar',
+      claimedAt: '2 hours ago'
+    },
+    assignedVolunteer: {
+      id: 'vol-rahul-bbsr',
+      name: 'Rahul Patnaik',
+      phone: '+91 94374 99112',
+      vehicle: 'TVS Jupiter (40L Thermal Box)',
+      status: 'delivered'
+    },
+    milestones: [
+      {
+        status: 'available',
+        title: 'Donation Listed',
+        timestamp: '3 hours ago',
+        description: '120 portions listed by Taj Vivanta'
+      },
+      {
+        status: 'claimed',
+        title: 'Claimed by Aahaar Seva Foundation',
+        timestamp: '2 hours ago',
+        description: 'Assigned for Old Town shelter distribution'
+      },
+      {
+        status: 'in_transit',
+        title: 'Picked Up by Rahul Patnaik',
+        timestamp: '1 hour ago',
+        description: 'Transit in insulated thermal carrier'
+      },
+      {
+        status: 'completed',
+        title: 'Delivered & Distributed',
+        timestamp: 'Today, 1:45 PM',
+        description: '120 wholesome meals served to shelter residents'
+      }
+    ]
+  },
+  {
+    id: 'food-dn-101',
+    donorId: 'donor-taj-bhubaneswar',
+    donorName: 'Taj Vivanta Kitchen',
+    donorPhone: '+91 94370 11223',
+    donorType: 'Hotel',
+    title: 'Buffet Paneer Lababdar, Dal Makhani & Jeera Rice',
+    description: 'Surplus from high-end corporate dinner banquet. Packed in food-grade insulated aluminum containers at 65°C.',
+    category: 'cooked_meals',
+    servings: 45,
+    weightKg: 18.0,
+    storage: 'ambient',
+    vegNonVeg: 'pure_veg',
+    preparedAt: 'Today at 2:30 PM',
+    expiryTime: 'Today by 8:30 PM (in 5 hours)',
+    pickupWindow: 'Immediate pickup available',
+    address: 'DN Square, Patia, Bhubaneswar',
+    city: 'Bhubaneswar (Odisha)',
+    locality: 'Patia IT Corridor',
+    latitude: 20.3533,
+    longitude: 85.8195,
+    status: 'available',
+    contactPhone: '+91 94370 11223',
+    notes: 'Please collect from Gate #3 service bay. Thermal bags recommended.',
+    image: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=600&q=80',
+    createdAt: '20 mins ago',
+    milestones: [
+      {
+        status: 'available',
+        title: 'Donation Listed & Cached in Redis',
+        timestamp: '20 mins ago',
+        description: '45 portions verified and broadcasted to nearby NGOs via Kafka event.'
+      }
+    ]
+  },
+  {
+    id: 'food-dn-102',
+    donorId: 'donor-mayfair-bbsr',
+    donorName: 'Mayfair Lagoon Banquets',
+    donorPhone: '+91 94371 44556',
+    donorType: 'Restaurant',
+    title: 'Freshly Baked Whole Wheat Loaves & Croissants',
+    description: 'Surplus morning bakery batches. Untouched, baked with premium butter and whole grain.',
+    category: 'bakery',
+    servings: 60,
+    weightKg: 12.5,
+    storage: 'ambient',
+    vegNonVeg: 'egg',
+    preparedAt: 'Today at 7:00 AM',
+    expiryTime: 'Tomorrow at 12:00 PM',
+    pickupWindow: 'Today 3:00 PM - 7:00 PM',
+    address: 'Jaydev Vihar, Bhubaneswar',
+    city: 'Bhubaneswar (Odisha)',
+    locality: 'Jaydev Vihar',
+    latitude: 20.3014,
+    longitude: 85.8277,
+    status: 'available',
+    contactPhone: '+91 94371 44556',
+    notes: 'Boxes sealed in cardboard crates.',
+    image: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=600&q=80',
+    createdAt: '45 mins ago',
+    milestones: [
+      {
+        status: 'available',
+        title: 'Donation Listed & Published to Kafka',
+        timestamp: '45 mins ago',
+        description: '60 portions published on food-donation-events topic.'
+      }
+    ]
+  },
+  {
+    id: 'food-dn-103',
+    donorId: 'donor-bbsr-caterers',
+    donorName: 'Utkal Royal Catering',
+    donorPhone: '+91 94375 77889',
+    donorType: 'Catering',
+    title: 'Traditional Odia Dalma, Kanika Pulao & Khatta',
+    description: 'High quality wedding feast surplus prepared by professional chefs. Steam preserved.',
+    category: 'cooked_meals',
+    servings: 80,
+    weightKg: 28.0,
+    storage: 'ambient',
+    vegNonVeg: 'pure_veg',
+    preparedAt: 'Today at 1:00 PM',
+    expiryTime: 'Today by 7:00 PM',
+    pickupWindow: 'Immediate dispatch',
+    address: 'Unit 4, MLA Colony, Bhubaneswar',
+    city: 'Bhubaneswar (Odisha)',
+    locality: 'Unit 4',
+    latitude: 20.2745,
+    longitude: 85.8260,
+    status: 'claimed',
+    contactPhone: '+91 94375 77889',
+    notes: 'Loadable in insulated boxes.',
+    image: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=600&q=80',
+    createdAt: '1 hour ago',
+    claimedByNGO: {
+      id: 'ngo-aahaar-bbsr',
+      name: 'Aahaar Seva Foundation',
+      contact: '+91 94372 88990',
+      address: 'Old Town Night Shelter, Bhubaneswar',
+      claimedAt: '35 mins ago'
+    },
+    assignedVolunteer: {
+      id: 'vol-rahul-bbsr',
+      name: 'Rahul Patnaik',
+      phone: '+91 94374 99112',
+      vehicle: 'TVS Jupiter (40L Thermal Box)',
+      status: 'en_route_pickup'
+    },
+    milestones: [
+      {
+        status: 'available',
+        title: 'Donation Created',
+        timestamp: '1 hour ago',
+        description: '80 servings listed'
+      },
+      {
+        status: 'claimed',
+        title: 'Claimed by Aahaar Seva Foundation',
+        timestamp: '35 mins ago',
+        description: 'Redis cache key invalidated. Pickup task created.'
+      },
+      {
+        status: 'in_transit',
+        title: 'Volunteer Rahul Assigned',
+        timestamp: '20 mins ago',
+        description: 'Rider en route to Unit 4 pickup point.'
+      }
+    ]
+  }
+];
+
+// Calculated directly from INITIAL_DONATIONS (120 + 45 + 60 + 80 = 305 meals, 35 + 18 + 12.5 + 28 = 93.5 kg)
+export const INITIAL_PLATFORM_STATS: PlatformStats = {
+  totalMealsRescued: 305,
+  totalKgSaved: 93.5,
+  co2PreventedKg: 234,
+  totalRupeesDonated: 0,
+  activeVolunteers: 1,
+  verifiedNGOs: 2,
+  partnerRestaurants: 2
+};
+
+export const DEMO_USERS: UserProfile[] = [
+  {
+    id: 'donor-taj-bhubaneswar',
+    name: 'Taj Vivanta Kitchen',
+    email: 'taj.vivanta@rescuemail.in',
+    phone: '+91 94370 11223',
+    role: 'donor',
+    organization: 'Vivanta by Taj Hotels',
+    city: 'Bhubaneswar (Odisha)',
+    address: 'DN Square, Patia, Bhubaneswar',
+    latitude: 20.3533,
+    longitude: 85.8195,
+    fssaiNumber: '12022001000456',
+    joinedDate: '3 months ago',
+    stats: {
+      mealsCount: 165, // 120 (completed) + 45 (available)
+      donationsCount: 2,
+      deliveriesCount: 0,
+      volunteerHours: 0,
+      totalRupeesContributed: 0
+    }
+  },
+  {
+    id: 'donor-mayfair-bbsr',
+    name: 'Mayfair Lagoon Banquets',
+    email: 'banquets@mayfairlagoon.in',
+    phone: '+91 94371 44556',
+    role: 'donor',
+    organization: 'Mayfair Hotels & Resorts',
+    city: 'Bhubaneswar (Odisha)',
+    address: 'Jaydev Vihar, Bhubaneswar',
+    latitude: 20.3014,
+    longitude: 85.8277,
+    fssaiNumber: '12021001000889',
+    joinedDate: '2 months ago',
+    stats: {
+      mealsCount: 60, // 60 (available)
+      donationsCount: 1,
+      deliveriesCount: 0,
+      volunteerHours: 0,
+      totalRupeesContributed: 0
+    }
+  },
+  {
+    id: 'ngo-aahaar-bbsr',
+    name: 'Aahaar Seva Foundation',
+    email: 'coordinator@aahaarseva.org',
+    phone: '+91 94372 88990',
+    role: 'ngo',
+    organization: 'Aahaar Seva NGO & Night Shelter',
+    city: 'Bhubaneswar (Odisha)',
+    address: 'Old Town, Near Lingaraj Station, Bhubaneswar',
+    latitude: 20.2405,
+    longitude: 85.8340,
+    panNumber: 'AAATA1234F',
+    joinedDate: '4 months ago',
+    stats: {
+      mealsCount: 200, // 120 (delivered) + 80 (claimed)
+      donationsCount: 2,
+      deliveriesCount: 0,
+      volunteerHours: 0,
+      totalRupeesContributed: 0
+    }
+  },
+  {
+    id: 'ngo-hope-shelter',
+    name: 'Hope Children Home & Care',
+    email: 'contact@hopeodisha.org',
+    phone: '+91 94373 55667',
+    role: 'ngo',
+    organization: 'Hope Care Trust',
+    city: 'Bhubaneswar (Odisha)',
+    address: 'Saheed Nagar, Near Mega Mall, Bhubaneswar',
+    latitude: 20.2912,
+    longitude: 85.8456,
+    panNumber: 'AAATH9876K',
+    joinedDate: '5 months ago',
+    stats: {
+      mealsCount: 0,
+      donationsCount: 0,
+      deliveriesCount: 0,
+      volunteerHours: 0,
+      totalRupeesContributed: 0
+    }
+  },
+  {
+    id: 'vol-rahul-bbsr',
+    name: 'Rahul Patnaik',
+    email: 'rahul.patnaik@rescuemail.in',
+    phone: '+91 94374 99112',
+    role: 'volunteer',
+    city: 'Bhubaneswar (Odisha)',
+    address: 'Acharya Vihar, Bhubaneswar',
+    latitude: 20.3001,
+    longitude: 85.8312,
+    vehicleType: 'TVS Jupiter with 40L Insulated Thermal Bag',
+    joinedDate: '2 months ago',
+    stats: {
+      mealsCount: 120, // 120 (completed delivery)
+      donationsCount: 0,
+      deliveriesCount: 1,
+      volunteerHours: 1.5,
+      totalRupeesContributed: 0
+    }
+  }
+];
+
+export const INITIAL_PICKUPS: PickupTask[] = [
+  {
+    id: 'pickup-pk-103',
+    donationId: 'food-dn-103',
+    donationTitle: 'Traditional Odia Dalma, Kanika Pulao & Khatta',
+    quantity: 80,
+    pickupAddress: 'Unit 4, MLA Colony, Bhubaneswar',
+    pickupLatitude: 20.2745,
+    pickupLongitude: 85.8260,
+    dropoffAddress: 'Old Town Night Shelter, Near Lingaraj Station, Bhubaneswar',
+    dropoffLatitude: 20.2405,
+    dropoffLongitude: 85.8340,
+    donorName: 'Utkal Royal Catering',
+    donorPhone: '+91 94375 77889',
+    ngoName: 'Aahaar Seva Foundation',
+    ngoPhone: '+91 94372 88990',
+    volunteerId: 'vol-rahul-bbsr',
+    volunteerName: 'Rahul Patnaik',
+    volunteerPhone: '+91 94374 99112',
+    status: 'assigned',
+    assignedAt: '20 mins ago',
+    createdAt: '35 mins ago'
+  }
+];
+
+export const INITIAL_ACTIVITIES: ActivityItem[] = [
+  {
+    id: 'act-1',
+    timestamp: '20 mins ago',
+    message: 'Taj Vivanta Kitchen listed 45 portions of Buffet Paneer Lababdar & Rice',
+    type: 'donation_posted',
+    meals: 45,
+    location: 'Patia, Bhubaneswar'
+  },
+  {
+    id: 'act-2',
+    timestamp: '35 mins ago',
+    message: 'Aahaar Seva Foundation claimed 80 servings from Utkal Royal Catering',
+    type: 'donation_claimed',
+    meals: 80,
+    location: 'Unit 4, Bhubaneswar'
+  },
+  {
+    id: 'act-3',
+    timestamp: '45 mins ago',
+    message: 'Mayfair Lagoon Banquets listed 60 portions of Freshly Baked Loaves',
+    type: 'donation_posted',
+    meals: 60,
+    location: 'Jaydev Vihar, Bhubaneswar'
+  },
+  {
+    id: 'act-4',
+    timestamp: '2 hours ago',
+    message: 'DELIVERED: 120 hot meals distributed to Slum Children Education Center',
+    type: 'delivery_completed',
+    meals: 120,
+    location: 'Cuttack Ring Road'
+  }
+];
+
+export const INITIAL_BROADCASTS: NGOBroadcastRequest[] = [
+  {
+    id: 'broad-1',
+    ngoName: 'Aahaar Seva Foundation',
+    location: 'Old Town Night Shelter, Bhubaneswar',
+    requiredServings: 50,
+    foodType: 'Nutritious Cooked Meals (Rice / Dal / Curry)',
+    urgency: 'high',
+    timeNeededBy: 'Today by 7:30 PM',
+    contactPerson: 'Manoj Dash',
+    contactPhone: '+91 94372 88990',
+    createdAt: '1 hour ago'
+  }
+];
+
+export const INITIAL_REDIS_METRICS: RedisCacheMetrics = {
+  key: 'donations:available',
+  status: 'HIT',
+  hits: 142,
+  misses: 8,
+  cachedCount: 2,
+  ttlSecondsRemaining: 540,
+  lastUpdated: 'Just now',
+  avgLatencyMs: 3.4
+};
+
+export const INITIAL_KAFKA_LOGS: KafkaLogRecord[] = [
+  {
+    offset: 104,
+    partition: 0,
+    topic: 'food-donation-events',
+    eventType: 'FOOD_DONATION_CREATED',
+    donationId: 'food-dn-101',
+    title: 'Buffet Paneer Lababdar & Rice',
+    quantity: 45,
+    donorOrNgo: 'Taj Vivanta Kitchen',
+    timestamp: 'Just now',
+    consumerStatus: 'PROCESSED'
+  },
+  {
+    offset: 103,
+    partition: 1,
+    topic: 'food-donation-events',
+    eventType: 'FOOD_DONATION_CLAIMED',
+    donationId: 'food-dn-103',
+    title: 'Traditional Odia Dalma Feast',
+    quantity: 80,
+    donorOrNgo: 'Aahaar Seva Foundation',
+    timestamp: '35 mins ago',
+    consumerStatus: 'PROCESSED'
+  },
+  {
+    offset: 102,
+    partition: 2,
+    topic: 'food-donation-events',
+    eventType: 'FOOD_DONATION_CREATED',
+    donationId: 'food-dn-102',
+    title: 'Freshly Baked Loaves & Croissants',
+    quantity: 60,
+    donorOrNgo: 'Mayfair Lagoon Banquets',
+    timestamp: '45 mins ago',
+    consumerStatus: 'PROCESSED'
+  }
+];
